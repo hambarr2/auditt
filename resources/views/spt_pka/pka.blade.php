@@ -154,6 +154,7 @@
                             <div class="col-md-5">
                                 <input type="text" class="form-control" id="nomor" name="nomor" required>
                             </div>
+                            
                         </div>
                         <div class="mb-3 row">
                             <label for="example-text-input" class="col-md-2 col-form-label">Catatan</label>

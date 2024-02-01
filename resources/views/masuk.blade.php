@@ -12,7 +12,7 @@
                 <div class="row justify-content-center my-auto">
                     <div class="col-md-8 col-lg-6 col-xl-5">
                        <div class="text-center mb-4">
-                            <a href="{{ route('dasbor') }}">
+                            <a href="{{ route('masuk') }}">
                                 <img src="{{ asset('assets/images/logo-kab-magetan.png') }}" alt="" height="35"> <span class="logo-txt">E-Audit</span>
                             </a>
                        </div>

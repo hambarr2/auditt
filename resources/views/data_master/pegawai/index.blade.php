@@ -23,7 +23,6 @@
                         <div class="col-12">
                             <div class="page-title-box d-flex align-items-center justify-content-between">
                                 <ol class="breadcrumb m-0">
-                                    <li class="breadcrumb-item"><a href="{{ route('dasbor') }}">Dasbor</a></li>
                                     <li class="breadcrumb-item"><a href="javascript: void(0);">Data Master</a></li>
                                     <li class="breadcrumb-item active">Pegawai</li>
                                 </ol>
@@ -106,9 +105,9 @@
                     @csrf
                     <div class="modal-body">
                         <div class="mb-3">
-                            <label for="nip" class="col-form-label" name="nip">NIP</label>
+                            <label for="nip" class="col-form-label" name="nip">NIP - (Pastikan input dengan tepat! NIP tidak dapat diubah!)</label>
                             <input type="text" class="form-control" id="nip" name="nip" required>
-                        </div>
+                        </div> 
                         <div class="mb-3">
                             <label for="nama_pegawai" class="col-form-label" name="nama_pegawai">Nama</label>
                             <input type="text" class="form-control" id="nama_pegawai" name="nama_pegawai" required>
@@ -156,7 +155,7 @@
                     <div class="modal-body">
                         <div class="mb-3">
                             <label for="ubah_nip" class="col-form-label" name="ubah_nip">NIP</label>
-                            <input type="text" class="form-control" id="ubah_nip" name="ubah_nip">
+                            <input type="text" class="form-control" id="ubah_nip" name="ubah_nip" readonly>
                         </div>
                         <div class="mb-3">
                             <label for="ubah_nama_pegawai" class="col-form-label" name="ubah_nama_pegawai">Nama</label>

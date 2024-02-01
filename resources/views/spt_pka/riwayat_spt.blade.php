@@ -41,8 +41,8 @@
                                                 <td class="text-center align-middle">{{ $data->nama_ketua_tim }}</td>
                                                 <td>
                                                     <div style="display: flex;">
-                                                        <button type="button" data-bs-toggle="modal" data-bs-target="#modalDetail" data-bs-id="{{ $data->id_spt }}" class="btn btn-info btn-sm" style="margin-right: 10px;">Detail SPT</button>
-                                                        <button type="button" style="margin-right: 10px" class="btn btn-info btn-sm" onclick="location.href='detail_pka/{{ $data->id_spt }}'">Detail PKA</button>
+                                                        <button type="button" data-bs-toggle="modal" data-bs-target="#modalDetail" data-bs-id="{{ $data->id_spt }}" class="btn btn-primary btn-sm" style="margin-right: 10px;">Detail SPT</button>
+                                                        <button type="button" style="margin-right: 10px" class="btn btn-primary btn-sm" onclick="location.href='detail_pka/{{ $data->id_spt }}'">Detail PKA</button>
                                                     </div>
                                                 </td>
                                             </tr>
@@ -52,15 +52,15 @@
                                                 <td class="text-center align-middle">{{ $data->nama_ketua_tim }}</td>
                                                 <td class="text-center align-middle">
                                                     <div style="display: flex;" class="d-flex justify-content-center">
-                                                        <a href="{{ route('cetak', $data->id_spt) }}" class="btn btn-info btn-sm" target="_blank" style="margin-right: 10px;">Unduh SPT</a>
+                                                        <a href="{{ route('cetak', $data->id_spt) }}" class="btn btn-primary btn-sm" target="_blank" style="margin-right: 10px;">Unduh SPT</a>
 
                                                         <a href="{{ route('cetak2', $data->id_spt) }}" class="btn btn-info btn-sm" target="_blank" style="margin-right: 10px;">Unduh PKA</a>
 
-                                                        <button type="button" data-bs-toggle="modal" data-bs-target="#modalDetail" data-bs-id="{{ $data->id_spt }}" class="btn btn-info btn-sm" style="margin-right: 10px;">SPT</button>
+                                                        <button type="button" data-bs-toggle="modal" data-bs-target="#modalDetail" data-bs-id="{{ $data->id_spt }}" class="btn btn-success btn-sm" style="margin-right: 10px;">SPT</button>
 
-                                                        <button type="button" class="btn btn-info btn-sm" style="margin-right: 10px;" onclick="location.href='detail_pka/{{ $data->id_spt }}'">PKA</button>
+                                                        <button type="button" class="btn btn-warning btn-sm" style="margin-right: 10px;" onclick="location.href='detail_pka/{{ $data->id_spt }}'">PKA</button>
 
-                                                        <button type="button" data-bs-id="{{ $data->id_spt }}" class="btn btn-info btn-sm" onclick="location.href='detail_spt/{{ $data->id_spt }}'" style="margin-right: 10px;">Penjadwalan</button>
+                                                        <button type="button" data-bs-id="{{ $data->id_spt }}" class="btn btn-danger btn-sm" onclick="location.href='detail_spt/{{ $data->id_spt }}'" style="margin-right: 10px;">Penjadwalan</button>
                                                     </div>
                                                 </td>
                                             </tr>

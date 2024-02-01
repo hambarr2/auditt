@@ -11,7 +11,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
-use Barryvdh\DomPDF\Facade\Pdf as PDF;
+// use Barryvdh\DomPDF\Facade\Pdf as PDF;
+use PhpOffice\PhpWord\IOFactory;
+use PhpOffice\PhpWord\PhpWord;
+
 
 class SPTController extends Controller
 {
@@ -537,169 +540,304 @@ class SPTController extends Controller
 
         // return view('template_spt', compact('spt', 'jangkaWaktu', 'ketJangkaWaktu', 'kurun_awal', 'kurun_akhir', 'kurun_waktu'));
 
-        //download pdf
-        $template = '
-            <!DOCTYPE html>
-            <html>
-            <head>
-                <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
-                <style>
-                    @page { size: A4 portrait; }
-                    html { margin: 1cm 1.5cm; }
-                    body { max-width: 21cm; font-family: Arial, Helvetica, sans-serif; }
-                    .page-break {
-                        page-break-after: always;
-                    }
-                    .p10 {
-                        margin: 0;
-                        font-size: 10pt;
-                    }
-                    .p11 {
-                        margin: 0;
-                        font-size: 11pt;
-                    }
-                    #kop {
-                        width: 100%;
-                        border-bottom: 3pt double black;
-                    }
-                    #kop td {
-                        text-align: center;
-                        vertical-align: middle;
-                    }
-                    #isi th, #isi td {
-                        text-align: left;
-                        vertical-align: top;
-                    }
-                    #kepada {
-                        width: 14.5cm;
-                        border: 2px solid black;
-                        border-collapse: collapse;
-                    }
-                    #kepada th, #kepada td {
-                        border: 1px solid black;
-                    }
-                    #kepada th, #kepada td {
-                        text-align: center;
-                        vertical-align: middle;
-                    }
-                </style>
-            </head>
-            <body>
-                <table id="kop">
-                    <tr>
-                        <td style="width: 13.5%;">
-                            <img src="'.public_path("logo.png").'" style="width: 100%;">
-                            <p style="margin: 0; font-size: 3pt;">&nbsp;</p>
-                        </td>
-                        <td style="width: 86.5%;">
-                            <p style="margin: 0; font-size: 12.7pt; font-weight: bold;">PEMERINTAH KABUPATEN MAGETAN</p>
-                            <p style="margin: 0; font-size: 16pt; font-weight: bold;">I N S P E K T O R A T</p>
-                            <p class="p10">Jl. Tripandita No. 17 Magetan Kode Pos 63319</p>
-                            <p class="p10">Telp. (0351) 897113 Fax. (0351) 897161</p>
-                            <p class="p10">E-mail : inspektorat@magetan.go.id Website : http://inspektorat.magetan.go.id</p>
-                        </td>
-                    </tr>
-                </table>
-                <div style="width: 100%;">
-                    <p style="margin-bottom: 0; text-decoration: underline; text-align: center; font-weight: bold; font-size: 16pt;">SURAT PERINTAH TUGAS&nbsp;</p>
-                    <p style="margin-top: 0; text-align: center; font-weight: bold; font-size: 11pt;">Nomor : 094/&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; /403.060/2023</p>
-                </div>
-                <table id="isi" style="width: 100%;">
-                    <tr>
-                        <th><p class="p11">DASAR</p></th>
-                        <td style="padding-left: 35px;"><p class="p11">:</p></td>
-                        <td style="padding-left: 20px;" id="content">';
-        $template .= preg_replace_callback('/<(p|ul|ol)(.*?)>/', function ($matches) {
-            $tag = $matches[1];
-            $attributes = $matches[2];
-            if ($tag === 'p') {
-                return "<$tag$attributes style=\"margin: 0;\" class=\"p11\">";
-            } elseif ($tag === 'ul' || $tag === 'ol') {
-                return "<$tag$attributes style=\"margin: 0; padding: 0 0 0 20px;\">";
-            } else {
-                return "<$tag$attributes>";
-            }
-        }, $spt->dasar_spt);
-        $template .= '
-                        </td>
-                    </tr>
-                    <tr>
-                        <th colspan="3"><p class="p11" style="text-align: center; margin: 10pt 0;">M E M E R I N T A H K A N</p></th>
-                    </tr>
-                    <tr>
-                        <th><p class="p11">KEPADA</p></th>
-                        <td style="padding-left: 35px;"><p class="p11">:</p></td>
-                        <td style="padding-left: 20px; padding-bottom: 15px;">
-                            <table id="kepada">
-                                <thead>
-                                    <tr>
-                                        <th class="p11" style="width: 0.5cm;">No.</th>
-                                        <th class="p11" style="width: 8cm;">NAMA</th>
-                                        <th class="p11" style="width: 4cm;">KETERANGAN</th>
-                                        <th class="p11" style="width: 2cm;">JANGKA WAKTU</th>
-                                    </tr>
-                                </thead>
-                                <tbody>';
+        $phpWord = new PhpWord();
+        $section = $phpWord->addSection([
+            'marginTop'    => 600,  
+            'marginBottom' => 600, 
+            'marginRight'  => 800,
+            'marginLeft'   => 800
+        ]);        
+        $table = $section->addTable();
+        $row = $table->addRow();
+        $lebarA4 = 21 * 600; 
+
+        // Kolom untuk logo di bagian kiri
+        $row->addCell(2500)->addImage(public_path("logo.png"), ['width' => 68]);
+
+        // Kolom untuk teks di bagian kanan
+        $textCell = $row->addCell(7500);
+        $textCell->addText('PEMERINTAH KABUPATEN MAGETAN', ['bold' => true, 'size' => 11], array('align' => 'center', 'space' => array('line' => -50)));
+        $textCell->addText('I N S P E K T O R A T', ['bold' => true, 'size' => 13], array('align' => 'center', 'space' => array('line' => -50)));
+        $textCell->addText('Jl. Tripandita No. 17 Magetan Kode Pos 63319', ['size' => 9], array('align' => 'center', 'space' => array('line' => -50)));
+        $textCell->addText('Telp. (0351) 897113 Fax. (0351) 897161', ['size' => 9], array('align' => 'center', 'space' => array('line' => -50)));
+        $textCell->addText('E-mail : inspektorat@magetan.go.id Website : http://inspektorat.magetan.go.id', ['size' => 9], array('align' => 'center', 'space' => array('line' => -50)));
+
+        $section->addLine(['weight' => 2,'width' => 510, 'height' => 0]);
+
+        // S P T 
+        $textRunHeader = $section->addTextRun(['alignment' => 'center']);
+        $textRunHeader->addText('SURAT PERINTAH TUGAS', ['bold' => true, 'underline' => 'single', 'size' => 16]);
+        $textRunHeader->addTextBreak();
+        $textRunHeader->addText('Nomor : 094/      /403.060/2024', ['bold' => true, 'size' => 11]);
+
+        $section->addTextBreak();
+        
+        // D A S A R
+        $tableDasar = $section->addTable(['borderSize' => 0, 'alignment' => 'center', 'borderColor' => 'white']);
+        $tableDasar->addRow();
+        $tableDasar->addCell($lebarA4 * 0.10)->addText('DASAR', ['bold' => true, 'size' => 11]);
+        $tableDasar->addCell($lebarA4 * 0.05)->addText(':', ['bold' => true, 'size' => 11], array('align' => 'center'));
+        $cleanedDasarSPT = strip_tags($spt->dasar_spt);
+        $tableDasar->addCell($lebarA4 * 0.85)->addText($cleanedDasarSPT, ['size' => 11]);
+
+        // M E M E R I N T A H K A N
+        $textRunCenter = $section->addTextRun(['alignment' => 'center']);
+        $textRunCenter->addText('M E M E R I N T A H K A N', ['bold' => true, 'size' => 11]);
+
+        // K E P A D A 
+        $tableee = $section->addTable(['borderSize' => 0, 'alignment' => 'center', 'borderColor' => 'white']);
+        $tableee->addRow();
+        $tableee->addCell($lebarA4 * 0.10)->addText('KEPADA', ['bold' => true, 'size' => 11]);        
+        $tableee->addCell($lebarA4 * 0.05)->addText(':', ['bold' => true, 'size' => 11], array('align' => 'center')); 
+        $tableee->addCell($lebarA4 * 0.85)->addText('');
+    
+        // T A B L E
+        $tables = $section->addTable(['width' => 50, 'borderColor' => 'black', 'borderSize' => 1, 'alignment' => 'right']);
+        $tables->addRow();
+        $tables->addCell(500)->addText('No.', ['bold' => true, 'size' => 11, 'align' => 'center'], array('align' => 'center'));
+        $tables->addCell(7000)->addText('NAMA', ['bold' => true, 'size' => 11, 'align' => 'center'], array('align' => 'center'));
+        $tables->addCell(3000)->addText('KETERANGAN', ['bold' => true, 'size' => 11, 'align' => 'center'], array('align' => 'center'));
+        $tables->addCell(2000)->addText('JANGKA WAKTU', ['bold' => true, 'size' => 11, 'align' => 'center'], array('align' => 'center'));
+        
         $no = 1;
         foreach ($spt->anggotaSPT as $anggota) {
-            $template .= '
-                                    <tr>
-                                        <td class="p11">'.$no++.'</td>
-                                        <td class="p11" style="text-align: left;">Sdr. &nbsp; &nbsp; '.strtoupper($anggota->relasi_pegawai->nama_pegawai).'</td>
-                                        <td class="p11">'.$anggota->keterangan.'</td>
-                                        <td class="p11">'.$jangkaWaktu.' &nbsp; &nbsp; hari</td>
-                                    </tr>';
+            $tables->addRow();
+            $tables->addCell(500)->addText($no++, ['size' => 11], array('align' => 'center'));
+            $tables->addCell(7000)->addText('Sdr. ' . strtoupper($anggota->relasi_pegawai->nama_pegawai), ['size' => 11]);
+            $tables->addCell(3000)->addText($anggota->keterangan, ['size' => 11], array('align' => 'center'));
+            $tables->addCell(2000)->addText($jangkaWaktu . ' hari', ['size' => 11], array('align' => 'center'));
         }
-        $template .= '
-                                </tbody>
-                            </table>
-                        </td>
-                    </tr>
-                    <tr>
-                        <th><p class="p11">UNTUK</p></th>
-                        <td style="padding-left: 35px;"><p class="p11">:</p></td>
-                        <td style="padding-left: 20px; padding-bottom: 10px; text-align: justify;"><p class="p11">'.html_entity_decode($spt->untuk_spt).'</p></td>
-                    </tr>
-                    <tr>
-                        <td><p class="p11"></p></td>
-                        <td colspan="2" style="text-align: justify; padding-left: 3px;">
-                            <p class="p11" style="text-indent: 3.7em; margin-bottom: 5pt;">Kegiatan tersebut dilaksanakan selama '.$jangkaWaktu.' ('.$ketJangkaWaktu.') hari kerja dalam kurun waktu '.$kurun_waktu.' dan biaya yang berkaitan dengan penugasan menjadi beban Anggaran Inspektorat Kabupaten Magetan.</p>
-                            <p class="p11" style="text-indent: 3.7em;">Kepada pihak-pihak yang bersangkutan diminta kesediannya untuk memberikan keterangan yang diperlukan guna kelancaran dan penyelesaian tugas dimaksud.</p>
-                            <p class="p11" style="text-indent: 3.7em;">Sebagai informasi, disampaikan bahwa Inspektorat Kabupaten Magetan tidak memungut biaya apapun atas pelayanan yang diberikan, dan untuk menjaga integritas dimohon untuk tidak menyampaikan pemberian dalam bentuk apapun kepada Pejabat/Pegawai Inspektorat Kabupaten Magetan.</p>
-                        </td>
-                    </tr>
-                </table>
-                <p></p>
-                <table style="width: 100%; border-collapse: collapse;">
-                    <tr>
-                        <td rowspan="6" style="width: 50%;"></td>
-                        <td class="p11">Dikeluarkan di</td>
-                        <td class="p11" style="text-align: center;">:</td>
-                        <td class="p11" style="text-align: right;">M A G E T A N</td>
-                    </tr>
-                    <tr>
-                        <td class="p11" style="border-bottom: 2px solid black;">Pada Tanggal</td>
-                        <td class="p11" style="text-align: center; border-bottom: 2px solid black;">:</td>
-                        <td class="p11" style="text-align: right; border-bottom: 2px solid black;"> '.date("F Y").' </td>
-                    </tr>
-                    <tr>
-                        <td class="p11" style="text-align: center; font-weight: bold;" colspan="3">INSPEKTUR KABUPATEN MAGETAN</td>
-                    </tr>
-                    <tr>
-                        <td class="p11" style="text-align: center; font-weight: bold; text-decoration: underline; padding-top: 100px;" colspan="3">Nama Inspektur</td>
-                    </tr>
-                    <tr>
-                        <td class="p11" style="text-align: center" colspan="3">Nama Pangkat</td>    
-                    </tr>
-                    <tr>
-                        <td class="p11" style="text-align: center" colspan="3">NIP. 00000000 000000 0 000</td>    
-                    </tr>
-                </table>
-            </body>
-            </html>';
-        $pdf = PDF::loadHTML($template)->setPaper('A4', 'portrait');
-        $pdf->output();
-        return $pdf->stream('Surat Perintah Tugas '.date("Y-m-d H-i-s").'.pdf', array('Attachment' => false));
+        
+        $section->addTextBreak();
+
+        // U N T U K
+        $tableUntuk = $section->addTable(['borderSize' => 0, 'alignment' => 'center', 'borderColor' => 'white']);
+        $tableUntuk->addRow();
+        $tableUntuk->addCell($lebarA4 * 0.10)->addText('UNTUK', ['bold' => true, 'size' => 11]);
+        $tableUntuk->addCell($lebarA4 * 0.05)->addText(':', ['bold' => true, 'size' => 11], array('align' => 'center'));
+        $tableUntuk->addCell($lebarA4 * 0.85)->addText($spt->untuk_spt, ['size' => 11]);
+
+        $section->addTextBreak();
+
+        // P A R A G R A P H
+        $paragraph1 = 'Kegiatan tersebut dilaksanakan selama ' . $jangkaWaktu . ' (' . $ketJangkaWaktu . ') hari kerja dalam kurun waktu ' . $kurun_waktu . ' dan biaya yang berkaitan dengan penugasan menjadi beban Anggaran Inspektorat Kabupaten Magetan.';
+        $paragraph2 = 'Kepada pihak-pihak yang bersangkutan diminta kesediannya untuk memberikan keterangan yang diperlukan guna kelancaran dan penyelesaian tugas dimaksud.';
+        $paragraph3 = 'Sebagai informasi, disampaikan bahwa Inspektorat Kabupaten Magetan tidak memungut biaya apapun atas pelayanan yang diberikan, dan untuk menjaga integritas dimohon untuk tidak menyampaikan pemberian dalam bentuk apapun kepada Pejabat/Pegawai Inspektorat Kabupaten Magetan.';
+        
+        $section->addText($paragraph1, ['size' => 11], ['alignment' => 'both', 'indentation' => ['left' => 600]]);
+        $section->addText($paragraph2, ['size' => 11], ['alignment' => 'both', 'indentation' => ['left' => 600]]);
+        $section->addText($paragraph3, ['size' => 11], ['alignment' => 'both', 'indentation' => ['left' => 600]]);
+        
+        $section->addTextBreak();
+
+        // T T D
+        $tableFooter = $section->addTable(['width' => 50, 'borderColor' => 'white', 'borderSize' => 1, 'alignment' => 'right']);
+        $tableFooter->addRow();
+        $tableFooter->addCell(2000)->addText('Dikeluarkan di', ['size' => 11], array('align' => 'left'));
+        $tableFooter->addCell(700)->addText(':', ['size' => 11], array('align' => 'center'));
+        $tableFooter->addCell(2000)->addText('M A G E T A N', ['size' => 11], array('align' => 'right'));
+
+        $tableFooter->addRow();
+        $tableFooter->addCell(2000)->addText('Pada Tanggal', ['size' => 11], array('align' => 'left', 'borderBottomSize' => 2, 'borderBottomColor' => 'black'));
+        $tableFooter->addCell(700)->addText(':', ['size' => 11], array('align' => 'center', 'borderBottomSize' => 2, 'borderBottomColor' => 'black'));
+        $bulanIndonesia = Carbon::parse(now())->locale('id_ID')->isoFormat('MMMM YYYY');
+        $tableFooter->addCell(2000)->addText($bulanIndonesia, ['size' => 11], array('align' => 'right', 'borderBottomSize' => 2, 'borderBottomColor' => 'black'));
+
+        $tableFoot = $section->addTable(['width' => 50, 'borderColor' => 'white', 'borderSize' => 1, 'alignment' => 'right']);
+        $tableFoot->addRow();
+        $tableFoot->addCell(4700)->addText('INSPEKTUR KABUPATEN MAGETAN', ['size' => 11, 'bold' => true], array('align' => 'center'));
+
+        $tableFoot->addRow();
+        $tableFoot->addCell(4700)->addText('', ['size' => 11], array('align' => 'center'));
+
+        $tableFoot->addRow();
+        $tableFoot->addCell(4700)->addText('', ['size' => 11], array('align' => 'center'));
+
+        $tableFoot->addRow();
+        $tableFoot->addCell(4700)->addText('', ['size' => 11], array('align' => 'center'));
+
+        $tableFoot->addRow();
+        $tableFoot->addCell(4700)->addText('Nama Inspektur', ['size' => 11, 'bold' => true, 'underline' => 'single'], array('align' => 'center'));
+
+        $tableFoot->addRow();
+        $tableFoot->addCell(4700)->addText('Nama Pangkat', ['size' => 11], array('align' => 'center'));
+
+        $tableFoot->addRow();
+        $tableFoot->addCell(4700)->addText('NIP. 000000000 000000 0 000', ['size' => 11], array('align' => 'center'));
+
+        // Simpan
+        $filename = 'Surat Perintah Tugas ' . date('Y-m-d H-i-s') . '.docx';
+        $filepath = storage_path('app/' . $filename);
+        $objWriter = IOFactory::createWriter($phpWord, 'Word2007');
+        $objWriter->save($filepath);
+
+        // Unduh file
+        return response()->download($filepath)->deleteFileAfterSend(true);
+
+
+        //download pdf
+        // $template = '
+        //     <!DOCTYPE html>
+        //     <html>
+        //     <head>
+        //         <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        //         <style>
+        //             @page { size: A4 portrait; }
+        //             html { margin: 1cm 1.5cm; }
+        //             body { max-width: 21cm; font-family: Arial, Helvetica, sans-serif; }
+        //             .page-break {
+        //                 page-break-after: always;
+        //             }
+        //             .p10 {
+        //                 margin: 0;
+        //                 font-size: 10pt;
+        //             }
+        //             .p11 {
+        //                 margin: 0;
+        //                 font-size: 11pt;
+        //             }
+        //             #kop {
+        //                 width: 100%;
+        //                 border-bottom: 3pt double black;
+        //             }
+        //             #kop td {
+        //                 text-align: center;
+        //                 vertical-align: middle;
+        //             }
+        //             #isi th, #isi td {
+        //                 text-align: left;
+        //                 vertical-align: top;
+        //             }
+        //             #kepada {
+        //                 width: 14.5cm;
+        //                 border: 2px solid black;
+        //                 border-collapse: collapse;
+        //             }
+        //             #kepada th, #kepada td {
+        //                 border: 1px solid black;
+        //             }
+        //             #kepada th, #kepada td {
+        //                 text-align: center;
+        //                 vertical-align: middle;
+        //             }
+        //         </style>
+        //     </head>
+        //     <body>
+        //         <table id="kop">
+        //             <tr>
+        //                 <td style="width: 13.5%;">
+        //                     <img src="'.public_path("logo.png").'" style="width: 100%;">
+        //                     <p style="margin: 0; font-size: 3pt;">&nbsp;</p>
+        //                 </td>
+        //                 <td style="width: 86.5%;">
+        //                     <p style="margin: 0; font-size: 12.7pt; font-weight: bold;">PEMERINTAH KABUPATEN MAGETAN</p>
+        //                     <p style="margin: 0; font-size: 16pt; font-weight: bold;">I N S P E K T O R A T</p>
+        //                     <p class="p10">Jl. Tripandita No. 17 Magetan Kode Pos 63319</p>
+        //                     <p class="p10">Telp. (0351) 897113 Fax. (0351) 897161</p>
+        //                     <p class="p10">E-mail : inspektorat@magetan.go.id Website : http://inspektorat.magetan.go.id</p>
+        //                 </td>
+        //             </tr>
+        //         </table>
+        //         <div style="width: 100%;">
+        //             <p style="margin-bottom: 0; text-decoration: underline; text-align: center; font-weight: bold; font-size: 16pt;">SURAT PERINTAH TUGAS&nbsp;</p>
+        //             <p style="margin-top: 0; text-align: center; font-weight: bold; font-size: 11pt;">Nomor : 094/&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; /403.060/2023</p>
+        //         </div>
+        //         <table id="isi" style="width: 100%;">
+        //             <tr>
+        //                 <th><p class="p11">DASAR</p></th>
+        //                 <td style="padding-left: 35px;"><p class="p11">:</p></td>
+        //                 <td style="padding-left: 20px;" id="content">';
+        // $template .= preg_replace_callback('/<(p|ul|ol)(.*?)>/', function ($matches) {
+        //     $tag = $matches[1];
+        //     $attributes = $matches[2];
+        //     if ($tag === 'p') {
+        //         return "<$tag$attributes style=\"margin: 0;\" class=\"p11\">";
+        //     } elseif ($tag === 'ul' || $tag === 'ol') {
+        //         return "<$tag$attributes style=\"margin: 0; padding: 0 0 0 20px;\">";
+        //     } else {
+        //         return "<$tag$attributes>";
+        //     }
+        // }, $spt->dasar_spt);
+        // $template .= '
+        //                 </td>
+        //             </tr>
+        //             <tr>
+        //                 <th colspan="3"><p class="p11" style="text-align: center; margin: 10pt 0;">M E M E R I N T A H K A N</p></th>
+        //             </tr>
+        //             <tr>
+        //                 <th><p class="p11">KEPADA</p></th>
+        //                 <td style="padding-left: 35px;"><p class="p11">:</p></td>
+        //                 <td style="padding-left: 20px; padding-bottom: 15px;">
+        //                     <table id="kepada">
+        //                         <thead>
+        //                             <tr>
+        //                                 <th class="p11" style="width: 0.5cm;">No.</th>
+        //                                 <th class="p11" style="width: 8cm;">NAMA</th>
+        //                                 <th class="p11" style="width: 4cm;">KETERANGAN</th>
+        //                                 <th class="p11" style="width: 2cm;">JANGKA WAKTU</th>
+        //                             </tr>
+        //                         </thead>
+        //                         <tbody>';
+        // $no = 1;
+        // foreach ($spt->anggotaSPT as $anggota) {
+        //     $template .= '
+        //                             <tr>
+        //                                 <td class="p11">'.$no++.'</td>
+        //                                 <td class="p11" style="text-align: left;">Sdr. &nbsp; &nbsp; '.strtoupper($anggota->relasi_pegawai->nama_pegawai).'</td>
+        //                                 <td class="p11">'.$anggota->keterangan.'</td>
+        //                                 <td class="p11">'.$jangkaWaktu.' &nbsp; &nbsp; hari</td>
+        //                             </tr>';
+        // }
+        // $template .= '
+        //                         </tbody>
+        //                     </table>
+        //                 </td>
+        //             </tr>
+        //             <tr>
+        //                 <th><p class="p11">UNTUK</p></th>
+        //                 <td style="padding-left: 35px;"><p class="p11">:</p></td>
+        //                 <td style="padding-left: 20px; padding-bottom: 10px; text-align: justify;"><p class="p11">'.html_entity_decode($spt->untuk_spt).'</p></td>
+        //             </tr>
+        //             <tr>
+        //                 <td><p class="p11"></p></td>
+        //                 <td colspan="2" style="text-align: justify; padding-left: 3px;">
+        //                     <p class="p11" style="text-indent: 3.7em; margin-bottom: 5pt;">Kegiatan tersebut dilaksanakan selama '.$jangkaWaktu.' ('.$ketJangkaWaktu.') hari kerja dalam kurun waktu '.$kurun_waktu.' dan biaya yang berkaitan dengan penugasan menjadi beban Anggaran Inspektorat Kabupaten Magetan.</p>
+        //                     <p class="p11" style="text-indent: 3.7em;">Kepada pihak-pihak yang bersangkutan diminta kesediannya untuk memberikan keterangan yang diperlukan guna kelancaran dan penyelesaian tugas dimaksud.</p>
+        //                     <p class="p11" style="text-indent: 3.7em;">Sebagai informasi, disampaikan bahwa Inspektorat Kabupaten Magetan tidak memungut biaya apapun atas pelayanan yang diberikan, dan untuk menjaga integritas dimohon untuk tidak menyampaikan pemberian dalam bentuk apapun kepada Pejabat/Pegawai Inspektorat Kabupaten Magetan.</p>
+        //                 </td>
+        //             </tr>
+        //         </table>
+        //         <p></p>
+        //         <table style="width: 100%; border-collapse: collapse;">
+        //             <tr>
+        //                 <td rowspan="6" style="width: 50%;"></td>
+        //                 <td class="p11">Dikeluarkan di</td>
+        //                 <td class="p11" style="text-align: center;">:</td>
+        //                 <td class="p11" style="text-align: right;">M A G E T A N</td>
+        //             </tr>
+        //             <tr>
+        //                 <td class="p11" style="border-bottom: 2px solid black;">Pada Tanggal</td>
+        //                 <td class="p11" style="text-align: center; border-bottom: 2px solid black;">:</td>
+        //                 <td class="p11" style="text-align: right; border-bottom: 2px solid black;"> '.date("F Y").' </td>
+        //             </tr>
+        //             <tr>
+        //                 <td class="p11" style="text-align: center; font-weight: bold;" colspan="3">INSPEKTUR KABUPATEN MAGETAN</td>
+        //             </tr>
+        //             <tr>
+        //                 <td class="p11" style="text-align: center; font-weight: bold; text-decoration: underline; padding-top: 100px;" colspan="3">Nama Inspektur</td>
+        //             </tr>
+        //             <tr>
+        //                 <td class="p11" style="text-align: center" colspan="3">Nama Pangkat</td>    
+        //             </tr>
+        //             <tr>
+        //                 <td class="p11" style="text-align: center" colspan="3">NIP. 00000000 000000 0 000</td>    
+        //             </tr>
+        //         </table>
+        //     </body>
+        //     </html>';
+        // $pdf = PDF::loadHTML($template)->setPaper('A4', 'portrait');
+        // $pdf->output();
+        // return $pdf->stream('Surat Perintah Tugas '.date("Y-m-d H-i-s").'.pdf', array('Attachment' => false));
     }
 
     function numberToWords($number)
@@ -719,10 +857,14 @@ class SPTController extends Controller
             11 => 'Sebelas'
         ];
 
-        if ($number < 10) {
+        if ($number < 0) {
+            return 'undefined';
+        }
+
+        if ($number < 12) {
             return $words[$number];
         } elseif ($number < 20) {
-            return $words[$number - 10] . ' belas' ;
+            return $words[$number % 10] . ' belas';
         } elseif ($number < 100) {
             return $words[($number - $number % 10) / 10] . ' puluh ' . ($number % 10 !== 0 ? $words[$number % 10] : '');
         } elseif ($number < 1000) {
@@ -731,7 +873,6 @@ class SPTController extends Controller
 
         return 'undefined';
     }
-
 
     function angkaBulanKeNama($bulan)
     {
@@ -749,7 +890,6 @@ class SPTController extends Controller
             11 => 'November',
             12 => 'Desember',
         ];
-
         return $namaBulan[$bulan] ?? 'Bulan tidak valid';
     }
 }

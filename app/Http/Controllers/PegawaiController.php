@@ -37,7 +37,8 @@ class PegawaiController extends Controller
                 return redirect()->route('ubah_kata_sandi');
             }
             return redirect()->route("spt_pka.spt");
-        }
+        };
+        // dd($data);
         Session::flash('alert', [
             'type' => 'error',
             'title' => 'Login Gagal',
@@ -97,7 +98,7 @@ class PegawaiController extends Controller
     public function tambah_pegawai_baru(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'nip' => 'required',
+            'nip' => 'required|unique:m_pegawai',
             'nama_pegawai' => 'required',
             'nama_bidang' => 'required',
             'nama_jabatan' => 'required',
@@ -107,7 +108,7 @@ class PegawaiController extends Controller
             Session::flash('alert', [
                 'type' => 'error',
                 'title' => 'Input Data Gagal',
-                'message' => 'Ada inputan yang salah!',
+                'message' => 'NIP tidak boleh sama!',
             ]);
         } else {
             Pegawai::create([
@@ -188,22 +189,66 @@ class PegawaiController extends Controller
         return back();
     }
 
+    // public function destroy($nip) {
+    //     $pegawai = Pegawai::findOrFail($nip);
+    //     if($pegawai) {
+    //         Session::flash('alert', [
+    //             'type' => 'success',
+    //             'title' => 'Hapus Data '.$pegawai->nama_pegawai.' Berhasil',
+    //             'message' => "",
+    //         ]); 
+    //         $pegawai->delete();
+    //     } else {
+    //         Session::flash('alert', [
+    //             'type' => 'error',
+    //             'title' => 'Hapus Data Gagal',
+    //             'message' => 'NIP Tidak Valid!',
+    //         ]); 
+    //     }
+    //     return back();
+    // }
+
     public function destroy($nip) {
-        $pegawai = Pegawai::findOrFail($nip);
-        if($pegawai) {
-            Session::flash('alert', [
-                'type' => 'success',
-                'title' => 'Hapus Data '.$pegawai->nama_pegawai.' Berhasil',
-                'message' => "",
-            ]); 
-            $pegawai->delete();
-        } else {
-            Session::flash('alert', [
-                'type' => 'error',
-                'title' => 'Hapus Data Gagal',
-                'message' => 'NIP Tidak Valid!',
-            ]); 
+        try {
+            $pegawai = Pegawai::findOrFail($nip);
+            
+            if ($pegawai) {
+                $pegawai->delete();
+                
+                Session::flash('alert', [
+                    'type' => 'success',
+                    'title' => 'Hapus Data '.$pegawai->nama_pegawai.' Berhasil',
+                    'message' => "",
+                ]);
+            } else {
+                Session::flash('alert', [
+                    'type' => 'error',
+                    'title' => 'Hapus Data Gagal',
+                    'message' => 'NIP Tidak Valid!',
+                ]);
+            }
+    
+            return back();
+        } catch (\Illuminate\Database\QueryException $e) {
+            $errorCode = $e->errorInfo[1];
+            
+            if ($errorCode == 1451) {
+                Session::flash('alert', [
+                    'type' => 'error',
+                    'title' => 'Hapus Data Gagal',
+                    'message' => 'Tidak dapat menghapus data '.$pegawai->nama_pegawai.'!',
+                    'closable' => true,
+                ]);
+            } else {
+                Session::flash('alert', [
+                    'type' => 'error',
+                    'title' => 'Hapus Data Gagal',
+                    'message' => 'Terjadi kesalahan saat menghapus data.',
+                ]);
+            }
+    
+            return back();
         }
-        return back();
     }
+    
 }

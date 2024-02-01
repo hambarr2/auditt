@@ -78,11 +78,11 @@
                                                                 });
                                                             </script>
                                                         @elseif($data->status_spt == "Terkirim")
-                                                            <button type="button" data-bs-toggle="modal" data-bs-target="#modalDetail" data-bs-id="{{ $data->id_spt }}" class="btn btn-info btn-sm">Detail SPT</button>
+                                                            <button type="button" data-bs-toggle="modal" data-bs-target="#modalDetail" data-bs-id="{{ $data->id_spt }}" class="btn btn-primary btn-sm">Detail SPT</button>
                                                         @elseif($data->status_spt == "Menunggu Verifikasi Irban")
                                                             <div style="display: flex;">
-                                                                <button type="button" data-bs-toggle="modal" data-bs-target="#modalDetail" data-bs-id="{{ $data->id_spt }}" class="btn btn-info btn-sm" style="margin-right: 10px;">Detail SPT</button>
-                                                                <button type="button" style="margin-right: 10px" class="btn btn-info btn-sm" onclick="location.href='detail_pka/{{ $data->id_spt }}'">Detail PKA</button>
+                                                                <button type="button" data-bs-toggle="modal" data-bs-target="#modalDetail" data-bs-id="{{ $data->id_spt }}" class="btn btn-primary btn-sm" style="margin-right: 10px;">Detail SPT</button>
+                                                                <button type="button" style="margin-right: 10px" class="btn btn-primary btn-sm" onclick="location.href='detail_pka/{{ $data->id_spt }}'">Detail PKA</button>
                                                             
                                                                 <form method="POST" action="{{ route('kirim_spt_irban', $data->id_spt) }}" id="kirim-spt-{{ $data->id_spt }}">
                                                                     @csrf
@@ -119,18 +119,18 @@
                                                             </script>
                                                         @elseif($data->status_spt == "Menunggu Verifikasi Sekre" || $data->status_spt == "Mengatur Jadwal")
                                                             <div style="display: flex;">
-                                                                <button type="button" data-bs-toggle="modal" data-bs-target="#modalDetail" data-bs-id="{{ $data->id_spt }}" class="btn btn-info btn-sm" style="margin-right: 10px;">Detail SPT</button>
-                                                                <button type="button" style="margin-right: 10px" class="btn btn-info btn-sm" onclick="location.href='detail_pka/{{ $data->id_spt }}'">Detail PKA</button>
+                                                                <button type="button" data-bs-toggle="modal" data-bs-target="#modalDetail" data-bs-id="{{ $data->id_spt }}" class="btn btn-primary btn-sm" style="margin-right: 10px;">Detail SPT</button>
+                                                                <button type="button" style="margin-right: 10px" class="btn btn-primary btn-sm" onclick="location.href='detail_pka/{{ $data->id_spt }}'">Detail PKA</button>
                                                             </div>
                                                         @elseif($data->status_spt == "Ditolak Irban")
                                                             <div style="display: flex;">
-                                                                <button type="button" data-bs-toggle="modal" data-bs-target="#modalDetail" data-bs-id="{{ $data->id_spt }}" class="btn btn-info btn-sm" style="margin-right: 10px;">Detail SPT</button>
-                                                                <button type="button" style="margin-right: 10px" class="btn btn-info btn-sm" onclick="location.href='detail_pka/{{ $data->id_spt }}'">Detail PKA</button>
+                                                                <button type="button" data-bs-toggle="modal" data-bs-target="#modalDetail" data-bs-id="{{ $data->id_spt }}" class="btn btn-primary btn-sm" style="margin-right: 10px;">Detail SPT</button>
+                                                                <button type="button" style="margin-right: 10px" class="btn btn-primary btn-sm" onclick="location.href='detail_pka/{{ $data->id_spt }}'">Detail PKA</button>
                                                             </div>
                                                         @elseif($data->status_spt == "Ditolak Sekre")
                                                             <div style="display: flex;">
-                                                                <button type="button" data-bs-toggle="modal" data-bs-target="#modalDetail" data-bs-id="{{ $data->id_spt }}" class="btn btn-info btn-sm" style="margin-right: 10px;">Detail SPT</button>
-                                                                <button type="button" style="margin-right: 10px" class="btn btn-info btn-sm" onclick="location.href='detail_pka/{{ $data->id_spt }}'">Detail PKA</button>
+                                                                <button type="button" data-bs-toggle="modal" data-bs-target="#modalDetail" data-bs-id="{{ $data->id_spt }}" class="btn btn-primary btn-sm" style="margin-right: 10px;">Detail SPT</button>
+                                                                <button type="button" style="margin-right: 10px" class="btn btn-primary btn-sm" onclick="location.href='detail_pka/{{ $data->id_spt }}'">Detail PKA</button>
                                                             </div>
                                                         @endif
                                                     </td>
@@ -147,8 +147,8 @@
                                                     <td class="text-center align-middle">{{ $data->status_spt }}</td>
                                                     <td>
                                                         <div style="display: flex;">
-                                                            <button type="button" data-bs-toggle="modal" data-bs-target="#modalDetail" data-bs-id="{{ $data->id_spt }}" class="btn btn-info btn-sm" style="margin-right: 10px;">Detail SPT</button>
-                                                            <button type="button" style="margin-right: 10px" class="btn btn-info btn-sm" onclick="location.href='detail_pka/{{ $data->id_spt }}'">Detail PKA</button>
+                                                            <button type="button" data-bs-toggle="modal" data-bs-target="#modalDetail" data-bs-id="{{ $data->id_spt }}" class="btn btn-primary btn-sm" style="margin-right: 10px;">Detail SPT</button>
+                                                            <button type="button" style="margin-right: 10px" class="btn btn-primary btn-sm" onclick="location.href='detail_pka/{{ $data->id_spt }}'">Detail PKA</button>
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -159,8 +159,8 @@
                                                     <td class="text-center align-middle">{{ $data->status_spt }}</td>
                                                     <td>
                                                         <div style="display: flex;">
-                                                            <button type="button" data-bs-toggle="modal" data-bs-target="#modalDetail" data-bs-id="{{ $data->id_spt }}" class="btn btn-info btn-sm" style="margin-right: 10px">Detail SPT</button>
-                                                            <button type="button" style="margin-right: 10px" class="btn btn-info btn-sm" onclick="location.href='detail_pka/{{ $data->id_spt }}'">Detail PKA</button>
+                                                            <button type="button" data-bs-toggle="modal" data-bs-target="#modalDetail" data-bs-id="{{ $data->id_spt }}" class="btn btn-primary btn-sm" style="margin-right: 10px">Detail SPT</button>
+                                                            <button type="button" style="margin-right: 10px" class="btn btn-primary btn-sm" onclick="location.href='detail_pka/{{ $data->id_spt }}'">Detail PKA</button>
                                     
                                                             <form method="POST" action="{{ route('verifikasi_spt_sekre', $data->id_spt) }}" id="kirim-spt-{{ $data->id_spt }}">
                                                                 @csrf
@@ -203,8 +203,8 @@
                                                     <td class="text-center align-middle">{{ $data->status_spt }}</td>
                                                     <td>
                                                         <div style="display: flex;">
-                                                            <button type="button" style="margin-right: 10px" class="btn btn-info btn-sm" onclick="location.href='{{ route('detail_spt', $data->id_spt) }}'">Atur Jadwal</button>
-                                                            <a href="{{ route('cetak', $data->id_spt) }}" target="_blank" class="btn btn-info btn-sm" style="margin-right: 10px;">Unduh</a> 
+                                                            <button type="button" style="margin-right: 10px" class="btn btn-primary btn-sm" onclick="location.href='{{ route('detail_spt', $data->id_spt) }}'">Atur Jadwal</button>
+                                                            <a href="{{ route('cetak', $data->id_spt) }}" target="_blank" class="btn btn-primary btn-sm" style="margin-right: 10px;">Unduh</a> 
                                                             
                                                             <form method="POST" action="{{ route('verifikasi_spt_selesai', $data->id_spt) }}" id="selesai-spt-{{ $data->id_spt }}">
                                                                 @csrf
@@ -239,8 +239,8 @@
                                                     <td class="text-center align-middle">{{ $data->status_spt }}</td>
                                                     <td>
                                                         <div style="display: flex;">
-                                                            <button type="button" data-bs-toggle="modal" data-bs-target="#modalDetail" data-bs-id="{{ $data->id_spt }}" class="btn btn-info btn-sm" style="margin-right: 10px;">Detail SPT</button>
-                                                            <button type="button" style="margin-right: 10px" class="btn btn-info btn-sm" onclick="location.href='detail_pka/{{ $data->id_spt }}'">Detail PKA</button>
+                                                            <button type="button" data-bs-toggle="modal" data-bs-target="#modalDetail" data-bs-id="{{ $data->id_spt }}" class="btn btn-primary btn-sm" style="margin-right: 10px;">Detail SPT</button>
+                                                            <button type="button" style="margin-right: 10px" class="btn btn-primary btn-sm" onclick="location.href='detail_pka/{{ $data->id_spt }}'">Detail PKA</button>
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -291,8 +291,8 @@
                                                     <td class="text-center align-middle">{{ $data->status_spt }}</td>
                                                     <td>
                                                         <div style="display: flex;">
-                                                            <button type="button" style="margin-right: 10px" data-bs-toggle="modal" data-bs-target="#modalDetail" data-bs-id="{{ $data->id_spt }}" class="btn btn-info btn-sm">Detail SPT</button>
-                                                            <button type="button" style="margin-right: 10px" class="btn btn-info btn-sm" onclick="location.href='detail_pka/{{ $data->id_spt }}'">Detail PKA</button>
+                                                            <button type="button" style="margin-right: 10px" data-bs-toggle="modal" data-bs-target="#modalDetail" data-bs-id="{{ $data->id_spt }}" class="btn btn-primary btn-sm">Detail SPT</button>
+                                                            <button type="button" style="margin-right: 10px" class="btn btn-primary btn-sm" onclick="location.href='detail_pka/{{ $data->id_spt }}'">Detail PKA</button>
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -339,8 +339,8 @@
                                                     <td class="text-center align-middle">{{ $data->status_spt }}</td>
                                                     <td>
                                                         <div style="display: flex;">
-                                                            <button type="button" style="margin-right: 10px" data-bs-toggle="modal" data-bs-target="#modalDetail" data-bs-id="{{ $data->id_spt }}" class="btn btn-info btn-sm">Detail SPT</button>
-                                                            <button type="button" style="margin-right: 10px" class="btn btn-info btn-sm" onclick="location.href='detail_pka/{{ $data->id_spt }}'">Detail PKA</button>
+                                                            <button type="button" style="margin-right: 10px" data-bs-toggle="modal" data-bs-target="#modalDetail" data-bs-id="{{ $data->id_spt }}" class="btn btn-primary btn-sm">Detail SPT</button>
+                                                            <button type="button" style="margin-right: 10px" class="btn btn-primary btn-sm" onclick="location.href='detail_pka/{{ $data->id_spt }}'">Detail PKA</button>
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -387,8 +387,8 @@
                                                     <td class="text-center align-middle">{{ $data->status_spt }}</td>
                                                     <td>
                                                         <div style="display: flex;">
-                                                            <button type="button" style="margin-right: 10px" data-bs-toggle="modal" data-bs-target="#modalDetail" data-bs-id="{{ $data->id_spt }}" class="btn btn-info btn-sm">Detail SPT</button>
-                                                            <button type="button" style="margin-right: 10px" data-bs-toggle="modal" data-bs-target="#modalDetail" data-bs-id="{{ $data->id_spt }}" class="btn btn-info btn-sm">Detail PKA</button>
+                                                            <button type="button" style="margin-right: 10px" data-bs-toggle="modal" data-bs-target="#modalDetail" data-bs-id="{{ $data->id_spt }}" class="btn btn-primary btn-sm">Detail SPT</button>
+                                                            <button type="button" style="margin-right: 10px" data-bs-toggle="modal" data-bs-target="#modalDetail" data-bs-id="{{ $data->id_spt }}" class="btn btn-primary btn-sm">Detail PKA</button>
                                                         </div>
                                                     </td>
                                                 </tr>
@@ -399,8 +399,8 @@
                                                     <td class="text-center align-middle">{{ $data->status_spt }}</td>
                                                     <td>
                                                         <div style="display: flex;">
-                                                            <button type="button" data-bs-toggle="modal" data-bs-target="#modalDetail" data-bs-id="{{ $data->id_spt }}" class="btn btn-info btn-sm" style="margin-right: 10px;">Detail SPT</button>
-                                                            <button type="button" style="margin-right: 10px" class="btn btn-info btn-sm" onclick="location.href='detail_pka/{{ $data->id_spt }}'">Detail PKA</button>
+                                                            <button type="button" data-bs-toggle="modal" data-bs-target="#modalDetail" data-bs-id="{{ $data->id_spt }}" class="btn btn-primary btn-sm" style="margin-right: 10px;">Detail SPT</button>
+                                                            <button type="button" style="margin-right: 10px" class="btn btn-primary btn-sm" onclick="location.href='detail_pka/{{ $data->id_spt }}'">Detail PKA</button>
                                                         </div>
                                                     </td>
                                                 </tr>

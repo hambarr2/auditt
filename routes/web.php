@@ -42,8 +42,8 @@ Route::middleware('auth')->group(function() {
 
     Route::group(['middleware' => 'ubah.kata.sandi'], function () {
         Route::get('/', function () {
-            return view('dasbor');
-        })->name('dasbor'); // GET Akses Laman Dasbor
+            return view('masuk');
+        })->name('masuk'); 
         Route::prefix('data-master')->group(function(){
             Route::get('pegawai', [PegawaiController::class, 'index'])->name('data_master.pegawai'); // GET Akses Laman Pegawai
             Route::post('tambah_pegawai', [PegawaiController::class, 'tambah_pegawai_baru'])->name('tambah_pegawai'); // POST Aksi Proses Tambah pegawai

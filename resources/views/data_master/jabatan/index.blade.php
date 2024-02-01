@@ -23,7 +23,6 @@
                         <div class="col-12">
                             <div class="page-title-box d-flex align-items-center justify-content-between">
                                 <ol class="breadcrumb m-0">
-                                    <li class="breadcrumb-item"><a href="{{ route('dasbor') }}">Dasbor</a></li>
                                     <li class="breadcrumb-item"><a href="javascript: void(0);">Data Master</a></li>
                                     <li class="breadcrumb-item active">Jabatan</li>
                                 </ol>
@@ -40,16 +39,16 @@
                             <table class="table table-striped" style="width:100%">
                                 <thead>
                                     <tr>
-                                        <th>Bidang</th>
-                                        <th>Nama Jabatan</th>                                            
+                                        <th>Jabatan</th> 
+                                        <th>Bidang</th>                                           
                                         <th>Aksi</th>                        
                                     </tr>
                                 </thead>
                                 <tbody>
                                     @foreach ($jabatan as $data)
                                         <tr>
-                                            <td>{{ $data->nama_bidang }}</td>
                                             <td>{{ $data->nama_jabatan }}</td>  
+                                            <td>{{ $data->nama_bidang }}</td>
                                             <td>
                                                 <div class="d-flex">
                                                     <a role="button" class="btn btn-warning me-2" title="Ubah Data" style="padding: 0.25rem 0.5rem; font-size: 18px;" data-bs-toggle="modal" data-bs-target="#modalUbah" data-bs-id="{{ $data->id_jabatan }}"><i class="bx bx-pencil"></i></a>

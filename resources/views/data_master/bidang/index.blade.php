@@ -22,7 +22,6 @@
                         <div class="col-12">
                             <div class="page-title-box d-flex align-items-center justify-content-between">
                                 <ol class="breadcrumb m-0">
-                                    <li class="breadcrumb-item"><a href="{{ route('dasbor') }}">Dasbor</a></li>
                                     <li class="breadcrumb-item"><a href="javascript: void(0);">Data Master</a></li>
                                     <li class="breadcrumb-item active">Bidang</li>
                                 </ol>

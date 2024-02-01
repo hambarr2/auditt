@@ -37,6 +37,7 @@ class PKAController extends Controller
             'catatan' => 'required',
         ]);
         
+        
         if ($validator->fails()) {
             Session::flash('alert', [
                 'type' => 'error',
@@ -59,7 +60,7 @@ class PKAController extends Controller
                 'no_kka' => $request->nomor,
                 'catatan' => $request->catatan,
             ]);
-    
+            
             Session::flash('alert', [
                 // tipe dalam sweetalert2: success, error, warning, info, question
                 'type' => 'success',
@@ -123,6 +124,7 @@ class PKAController extends Controller
                     'title' => 'Edit Data Berhasil',
                     'message' => "",
                 ]);
+                
             } else {
                 Session::flash('alert', [
                     'type' => 'error',
@@ -132,6 +134,7 @@ class PKAController extends Controller
             }
         }
         return back();
+
     }
 
     public function ubah_isian_pka($id) 
